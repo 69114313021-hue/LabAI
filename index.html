@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <base target="_top">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LabTrack Real-Time</title>
+  
+  <!-- Google Fonts: Noto Sans Thai -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- FontAwesome (Icons) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <style>
+    /* CSS Variables for Modern Color Palette */
+    :root {
+      --primary: #4F46E5;      /* Indigo */
+      --primary-hover: #4338CA;
+      --secondary: #10B981;    /* Emerald Green */
+      --secondary-hover: #059669;
+      --accent: #F59E0B;       /* Amber */
+      --danger: #EF4444;       /* Red */
+      --danger-hover: #DC2626;
+      --warning: #F59E0B;
+      --info: #3B82F6;         /* Blue */
+      
+      --bg-main: #F3F4F6;      /* Light Gray background */
+      --bg-card: #FFFFFF;
+      --text-main: #1F2937;
+      --text-muted: #6B7280;
+      
+      --border-color: #E5E7EB;
+      
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      
+      --radius-sm: 6px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+    }
+
+    /* Reset & Typography */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Noto Sans Thai', sans-serif;
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      line-height: 1.6;
+    }
+
+    /* Container */
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 2rem 1rem;
+    }
+
+    /* Header Section */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+      background: var(--bg-card);
+      padding: 1.5rem 2rem;
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-sm);
+    }
+    
+    .header-title {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .header-icon {
+      background: linear-gradient(135deg, var(--primary), var(--info));
+      color: white;
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: var(--radius-md);
+      font-size: 1.5rem;
+    }
+    .header h1 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 0.2rem;
+    }
+    .header p {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    /* Tabs Navigation */
+    .nav-tabs {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      border-bottom: 2px solid var(--border-color);
+      padding-bottom: 1rem;
+    }
+    .nav-btn {
+      background: transparent;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      font-size: 1rem;
+      font-family: 'Noto Sans Thai', sans-serif;
+      font-weight: 600;
+      color: var(--text-muted);
+      cursor: pointer;
+      border-radius: var(--radius-md);
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .nav-btn:hover {
+      background: #E5E7EB;
+      color: var(--text-main);
+    }
+    .nav-btn.active {
+      background: var(--primary);
+      color: white;
+      box-shadow: var(--shadow-md);
+    }
+
+    /* Tab Content Areas */
+    .tab-content { display: none; animation: fadeIn 0.3s ease; }
+    .tab-content.active { display: block; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Card Panels */
+    .panel {
+      background: var(--bg-card);
+      border-radius: var(--radius-lg);
+      padding: 2rem;
+      box-shadow: var(--shadow-md);
+      margin-bottom: 1.5rem;
+    }
+    .panel-header {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--primary);
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 1rem;
+    }
+
+    /* Input & Buttons */
+    .input-group {
+      display: flex;
+      gap: 1rem;
+      max-width: 600px;
+    }
+    .form-control {
+      flex: 1;
+      padding: 1rem 1.25rem;
+      font-size: 1rem;
+      font-family: inherit;
+      border: 2px solid var(--border-color);
+      border-radius: var(--radius-md);
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+      outline: none;
+    }
+    .form-control:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+    }
+    .btn {
+      padding: 1rem 1.5rem;
+      font-size: 1rem;
+      font-family: inherit;
+      font-weight: 600;
+      border: none;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+    .btn-primary:hover { background: var(--primary-hover); transform: translateY(-2px); box-shadow: var(--shadow-md); }
+    
+    .btn-success { background: var(--secondary); color: white; }
+    .btn-success:hover { background: var(--secondary-hover); transform: translateY(-2px); box-shadow: var(--shadow-md); }
+    
+    .btn-danger { background: var(--danger); color: white; }
+    .btn-danger:hover { background: var(--danger-hover); transform: translateY(-2px); box-shadow: var(--shadow-md); }
+
+    /* Messages */
+    .msg-area {
+      margin-top: 1.5rem;
+      padding: 1rem;
+      border-radius: var(--radius-md);
+      font-weight: 500;
+      display: none;
+    }
+    .msg-success { background: #D1FAE5; color: #065F46; border-left: 4px solid var(--secondary); display: block; }
+    .msg-error { background: #FEE2E2; color: #991B1B; border-left: 4px solid var(--danger); display: block; }
+    .msg-loading { background: #E0E7FF; color: #3730A3; border-left: 4px solid var(--primary); display: block; }
+
+    /* Dashboard Cards (Modern Grid) */
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      margin-top: 1rem;
+    }
+    .stat-card {
+      background: var(--bg-card);
+      border-radius: var(--radius-lg);
+      padding: 2rem;
+      box-shadow: var(--shadow-md);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      border: 1px solid var(--border-color);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .stat-card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-lg);
+    }
+    /* Add color accents to cards */
+    .stat-card.sending { border-top: 4px solid var(--warning); }
+    .stat-card.received { border-top: 4px solid var(--secondary); }
+    .stat-card.problem { border-top: 4px solid var(--danger); }
+    
+    .stat-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+    .stat-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+    .stat-icon {
+      font-size: 2rem;
+      opacity: 0.8;
+    }
+    .sending .stat-icon { color: var(--warning); }
+    .received .stat-icon { color: var(--secondary); }
+    .problem .stat-icon { color: var(--danger); }
+
+    .stat-value {
+      font-size: 3.5rem;
+      font-weight: 700;
+      line-height: 1;
+    }
+    .sending .stat-value { color: var(--text-main); }
+    .received .stat-value { color: var(--secondary); }
+    .problem .stat-value { color: var(--danger); }
+    
+    /* Mockup Data List Style */
+     .data-list {
+        margin-top: 2rem;
+        background: white;
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-sm);
+        border: 1px solid var(--border-color);
+        overflow: hidden;
+    }
+    .list-header {
+        background: #F9FAFB;
+        padding: 1rem 1.5rem;
+        font-weight: 600;
+        color: var(--text-muted);
+        border-bottom: 1px solid var(--border-color);
+        display: grid;
+        grid-template-columns: 1fr 2fr 1fr 1fr;
+        gap: 1rem;
+    }
+    .list-item {
+        padding: 1.25rem 1.5rem;
+        border-bottom: 1px solid var(--border-color);
+        display: grid;
+        grid-template-columns: 1fr 2fr 1fr 1fr;
+        gap: 1rem;
+        align-items: center;
+        transition: background 0.2s;
+    }
+    .list-item:hover { background: #F9FAFB; }
+    .list-item:last-child { border-bottom: none; }
+    
+    .badge {
+        padding: 0.25rem 0.75rem;
+        border-radius: 999px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        display: inline-block;
+    }
+    .badge-sending { background: #FEF3C7; color: #D97706; }
+    .badge-received { background: #D1FAE5; color: #059669; }
+    
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    
+    <!-- Header -->
+    <header class="header">
+      <div class="header-title">
+        <div class="header-icon"><i class="fa-solid fa-flask-vial"></i></div>
+        <div>
+          <h1>LabTrack Real-Time</h1>
+          <p>ระบบติดตามสิ่งส่งตรวจ หอผู้ป่วย & ห้องปฏิบัติการ</p>
+        </div>
+      </div>
+      <div>
+        <span style="color: var(--text-muted); font-size: 0.9rem;">
+          <i class="fa-regular fa-clock"></i> <span id="current-time"></span>
+        </span>
+      </div>
+    </header>
+
+    <!-- Navigation -->
+    <nav class="nav-tabs">
+      <button class="nav-btn active" id="btn-ward" onclick="switchTab('ward')">
+        <i class="fa-solid fa-bed-pulse"></i> หน้าหอผู้ป่วย
+      </button>
+      <button class="nav-btn" id="btn-lab" onclick="switchTab('lab')">
+        <i class="fa-solid fa-microscope"></i> หน้าห้องปฏิบัติการ
+      </button>
+      <button class="nav-btn" id="btn-dash" onclick="switchTab('dash'); loadSummary();">
+        <i class="fa-solid fa-chart-pie"></i> แดชบอร์ดภาพรวม
+      </button>
+    </nav>
+
+    <!-- Tab 1: หอผู้ป่วย (Ward) -->
+    <div id="tab-ward" class="tab-content active">
+      <div class="panel">
+        <h2 class="panel-header"><i class="fa-solid fa-qrcode"></i> ส่งสิ่งส่งตรวจออกจากหอผู้ป่วย</h2>
+        <div class="input-group">
+          <input type="text" id="ward-input" class="form-control" placeholder="สแกนบาร์โค้ด หรือพิมพ์ (แล้วกด Enter)">
+          <button class="btn btn-primary" onclick="processScanUI('ward', 'ส่งออก')">
+            <i class="fa-solid fa-paper-plane"></i> ยืนยันส่งออก
+          </button>
+        </div>
+        <div id="ward-msg" class="msg-area"></div>
+      </div>
+      
+      <!-- Mock List for visual fill -->
+       <div class="data-list">
+          <div class="list-header">
+              <div>บาร์โค้ด</div>
+              <div>รายละเอียด</div>
+              <div>สถานะล่าสุด</div>
+              <div>เวลาที่บันทึก</div>
+          </div>
+          <div class="list-item">
+              <strong>LAB-2026-101</strong>
+              <div>ผู้ป่วย: นายกมล ทดสอบ<br><small style="color: var(--text-muted)">รายการ: CBC</small></div>
+              <div><span class="badge badge-sending">กำลังส่งออก</span></div>
+              <div style="color: var(--text-muted)">10 นาทีที่แล้ว</div>
+          </div>
+          <div class="list-item">
+              <strong>LAB-2026-102</strong>
+              <div>ผู้ป่วย: นางสมศรี สมมุติ<br><small style="color: var(--text-muted)">รายการ: Chemistry</small></div>
+              <div><span class="badge badge-received">Lab รับแล้ว</span></div>
+              <div style="color: var(--text-muted)">45 นาทีที่แล้ว</div>
+          </div>
+      </div>
+    </div>
+
+    <!-- Tab 2: ห้องปฏิบัติการ (Lab) -->
+    <div id="tab-lab" class="tab-content">
+      <div class="panel">
+        <h2 class="panel-header"><i class="fa-solid fa-inbox"></i> รับสิ่งส่งตรวจเข้า Lab / แจ้งปัญหา</h2>
+        <div class="input-group">
+          <input type="text" id="lab-input" class="form-control" placeholder="สแกนบาร์โค้ด หรือพิมพ์ (แล้วกด Enter)">
+          <button class="btn btn-success" onclick="processScanUI('lab', 'รับเข้า')">
+            <i class="fa-solid fa-check"></i> รับเข้า
+          </button>
+          <button class="btn btn-danger" onclick="processScanUI('lab', 'มีปัญหา')">
+            <i class="fa-solid fa-triangle-exclamation"></i> แจ้งปัญหา
+          </button>
+        </div>
+        <div id="lab-msg" class="msg-area"></div>
+      </div>
+    </div>
+
+    <!-- Tab 3: แดชบอร์ด (Dashboard) -->
+    <div id="tab-dash" class="tab-content">
+      
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+         <h2 style="font-size: 1.5rem; font-weight: 600; color: var(--text-main);">สรุปสถานะการปฏิบัติงาน (วันนี้)</h2>
+         <button class="btn btn-primary" style="padding: 0.5rem 1rem;" onclick="loadSummary()">
+             <i class="fa-solid fa-rotate-right"></i> อัปเดตข้อมูล
+         </button>
+      </div>
+
+      <div class="dashboard-grid">
+        <!-- Card 1 -->
+        <div class="stat-card sending">
+          <div class="stat-header">
+            <span class="stat-title">กำลังขนส่ง (ส่งจากหอฯ)</span>
+            <i class="fa-solid fa-truck-fast stat-icon"></i>
+          </div>
+          <div class="stat-value" id="val-sending">--</div>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="stat-card received">
+          <div class="stat-header">
+            <span class="stat-title">Lab รับแล้ว / กำลังตรวจ</span>
+            <i class="fa-solid fa-vials stat-icon"></i>
+          </div>
+          <div class="stat-value" id="val-received">--</div>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="stat-card problem">
+          <div class="stat-header">
+            <span class="stat-title">พบปัญหา / ตีกลับ</span>
+            <i class="fa-solid fa-triangle-exclamation stat-icon"></i>
+          </div>
+          <div class="stat-value" id="val-problem">--</div>
+        </div>
+      </div>
+      
+    </div>
+
+  </div>
+
+  <script>
+    // Update Clock
+    function updateTime() {
+        const now = new Date();
+        document.getElementById('current-time').innerText = now.toLocaleTimeString('th-TH');
+    }
+    setInterval(updateTime, 1000);
+    updateTime();
+
+    // Tab Switching Logic
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
+      
+      document.getElementById('tab-' + tabId).classList.add('active');
+      document.getElementById('btn-' + tabId).classList.add('active');
+    }
+
+    // Input Enter Key Support
+    document.getElementById('ward-input').addEventListener('keypress', function(e) {
+        if(e.key === 'Enter') processScanUI('ward', 'ส่งออก');
+    });
+    document.getElementById('lab-input').addEventListener('keypress', function(e) {
+        if(e.key === 'Enter') processScanUI('lab', 'รับเข้า');
+    });
+
+    // Real Process Scan (Calling GAS)
+    function processScanUI(source, action) {
+        const inputEl = document.getElementById(source + '-input');
+        const msgEl = document.getElementById(source + '-msg');
+        const barcode = inputEl.value.trim();
+
+        if(!barcode) {
+            msgEl.className = 'msg-area msg-error';
+            msgEl.innerHTML = '<i class="fa-solid fa-circle-xmark"></i> กรุณาระบุรหัสบาร์โค้ด';
+            return;
+        }
+
+        // Loading State
+        inputEl.disabled = true;
+        msgEl.className = 'msg-area msg-loading';
+        msgEl.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> กำลังบันทึกข้อมูล...';
+
+        // Call GAS
+        if(typeof google !== 'undefined') {
+            google.script.run
+            .withSuccessHandler(function(res) {
+                inputEl.disabled = false;
+                inputEl.value = '';
+                inputEl.focus();
+                
+                msgEl.className = 'msg-area msg-success';
+                const time = new Date(res.time).toLocaleTimeString('th-TH');
+                msgEl.innerHTML = `<i class="fa-solid fa-circle-check"></i> บันทึก <b>${res.barcode}</b> สถานะ <b>${res.action}</b> สำเร็จ! (เวลา ${time})`;
+                
+                setTimeout(() => { msgEl.style.display = 'none'; msgEl.className = 'msg-area'; }, 3000);
+            })
+            .withFailureHandler(function(err) {
+                inputEl.disabled = false;
+                msgEl.className = 'msg-area msg-error';
+                msgEl.innerHTML = '<i class="fa-solid fa-circle-xmark"></i> เกิดข้อผิดพลาด: ' + err.message;
+            })
+            .processScan(barcode, action, 'User (ระบบ)');
+        } else {
+            // Fallback for standalone viewing without GAS backend
+             setTimeout(() => {
+                inputEl.disabled = false;
+                inputEl.value = '';
+                inputEl.focus();
+                msgEl.className = 'msg-area msg-success';
+                msgEl.innerHTML = `<i class="fa-solid fa-circle-check"></i> (จำลอง) บันทึก <b>${barcode}</b> สถานะ <b>${action}</b> สำเร็จ!`;
+                setTimeout(() => { msgEl.style.display = 'none'; msgEl.className = 'msg-area'; }, 3000);
+            }, 800);
+        }
+    }
+
+    // Call GAS to get Summary Data
+    function loadSummary() {
+        const ids = ['val-sending', 'val-received', 'val-problem'];
+        ids.forEach(id => document.getElementById(id).innerText = '...');
+        
+        if(typeof google !== 'undefined') {
+            google.script.run
+            .withSuccessHandler(function(res) {
+                document.getElementById('val-sending').innerText = res.sending;
+                document.getElementById('val-received').innerText = res.received;
+                document.getElementById('val-problem').innerText = res.problem;
+            })
+            .getSummary();
+        } else {
+             setTimeout(() => {
+                document.getElementById('val-sending').innerText = Math.floor(Math.random() * 20) + 5; 
+                document.getElementById('val-received').innerText = Math.floor(Math.random() * 100) + 40; 
+                document.getElementById('val-problem').innerText = Math.floor(Math.random() * 5); 
+            }, 600);
+        }
+    }
+  </script>
+</body>
+</html>
